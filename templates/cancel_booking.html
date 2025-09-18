@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cancel Booking - TableBook{% endblock %}
+
+{% block content %}
+<div class="text-center mb-3">
+    <h1><i class="fas fa-times-circle"></i> Cancel Booking</h1>
+    <p>Are you sure you want to cancel this reservation?</p>
+</div>
+
+{% if booking %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-calendar-times"></i> Booking Details
+        </h2>
+    </div>
+    
+    <div class="booking-details">
+        <div class="booking-detail-row">
+            <span class="booking-detail-label">Booking ID:</span>
+            <span class="booking-detail-value">{{ booking.id|slice:":8" }}</span>
+        </div>
+        
+        <div class="booking-detail-row">
+            <span class="booking-detail-label">Guest Name:</span>
+            <span class="booking-detail-value">{{ booking.guest_name }}</span>
+        </div>
+        
+        <div class="booking-detail-row">
+            <span class="booking-detail-label">Restaurant:</span>
+            <span class="booking-detail-value">{{ booking.restaurant.name }}</span>
+        </div>
+        
+        <div class="booking-detail-row">
+            <span class="booking-detail-label">Date:</span>
+            <span class="booking-detail-value">{{ booking.visit_date|date:"F d, Y" }}</span>
+        </div>
+        
+        <div class="booking-detail-row">
+            <span class="booking-detail-label">Time:</span>
+            <span class="booking-detail-value">{{ booking.visit_time|time:"g:i A" }}</span>
+        </div>
+        
+        <div class="booking-detail-row">
+            <span class="booking-detail-label">Party Size:</span>
+            <span class="booking-detail-value">{{ booking.number_of_guests }} guests</span>
+        </div>
+        
+        <div class="booking-detail-row">
+            <span class="booking-detail-label">Status:</span>
+            <span class="booking-detail-value">
+                <span class="status-badge status-{{ booking.status }}">
+                    {{ booking.get_status_display }}
+                </span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Cancellation Form -->
+<div class="card" style="max-width: 600px; margin: 2rem auto 0;">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-exclamation-triangle"></i> Confirm Cancellation
+        </h3>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="alert alert-warning">
+            <i class="fas fa-info-circle"></i>
+            <strong>Important:</strong> This action cannot be undone. Once cancelled, you'll need to make a new booking if you want to reserve a table.
+        </div>
+        
+        <div style="text-align: center; margin: 2rem 0;">
+            <button type="submit" class="btn btn-danger" style="margin-right: 1rem;">
+                <i class="fas fa-times"></i> Yes, Cancel Booking
+            </button>
+            
+            <a href="{% url 'app:booking_detail' booking.id %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Keep Booking
+            </a>
+        </div>
+    </form>
+</div>
+
+{% else %}
+<div class="card text-center">
+    <div style="font-size: 3rem; color: var(--light-text); margin-bottom: 1rem;">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <h2>Booking Not Found</h2>
+    <p>The booking you're trying to cancel doesn't exist or has already been cancelled.</p>
+    <a href="{% url 'app:index' %}" class="btn btn-primary">Book a Table</a>
+</div>
+{% endif %}
+{% endblock %}

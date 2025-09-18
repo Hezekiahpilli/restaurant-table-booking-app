@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ restaurant.name }} - TableBook{% endblock %}
+
+{% block content %}
+<!-- Restaurant Header -->
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="restaurant-image" style="height: 300px; background: linear-gradient(45deg, var(--secondary-color), var(--primary-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; border-radius: var(--border-radius) var(--border-radius) 0 0;">
+        <i class="fas fa-utensils"></i>
+    </div>
+    <div style="padding: 2rem;">
+        <h1 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ restaurant.name }}</h1>
+        <div style="color: var(--light-text); font-size: 1.1rem; margin-bottom: 1rem;">
+            <i class="fas fa-map-marker-alt"></i> {{ restaurant.location }}
+        </div>
+        
+        {% if restaurant.description %}
+        <p style="color: var(--dark-text); line-height: 1.6; margin-bottom: 1.5rem;">{{ restaurant.description }}</p>
+        {% endif %}
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            {% if restaurant.phone %}
+            <div style="display: flex; align-items: center; color: var(--light-text);">
+                <i class="fas fa-phone" style="margin-right: 0.5rem; color: var(--secondary-color);"></i>
+                {{ restaurant.phone }}
+            </div>
+            {% endif %}
+            
+            {% if restaurant.email %}
+            <div style="display: flex; align-items: center; color: var(--light-text);">
+                <i class="fas fa-envelope" style="margin-right: 0.5rem; color: var(--secondary-color);"></i>
+                {{ restaurant.email }}
+            </div>
+            {% endif %}
+            
+            {% if restaurant.opening_hours %}
+            <div style="display: flex; align-items: center; color: var(--light-text);">
+                <i class="fas fa-clock" style="margin-right: 0.5rem; color: var(--secondary-color);"></i>
+                {{ restaurant.opening_hours }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+    <!-- Table Information -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-table"></i> Available Tables
+            </h2>
+        </div>
+        
+        {% if tables %}
+        <div style="display: grid; gap: 1rem;">
+            {% for table in tables %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--light-bg); border-radius: var(--border-radius);">
+                <div>
+                    <h4 style="color: var(--primary-color); margin-bottom: 0.25rem;">
+                        Table for {{ table.size }} people
+                    </h4>
+                    <p style="color: var(--light-text); margin: 0;">
+                        {{ table.quantity }} table{{ table.quantity|pluralize }} available
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: var(--success-color); font-weight: bold;">
+                        <i class="fas fa-check-circle"></i> Available
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem; color: var(--light-text);">
+            <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>No table information available at the moment.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Booking Actions -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-calendar-plus"></i> Book a Table
+            </h3>
+        </div>
+        
+        <p style="color: var(--light-text); margin-bottom: 1.5rem;">
+            Ready to make a reservation at {{ restaurant.name }}? Click below to start the booking process.
+        </p>
+        
+        <a href="{% url 'app:index' %}?restaurant={{ restaurant.id }}" class="btn btn-primary btn-block" style="margin-bottom: 1rem;">
+            <i class="fas fa-calendar-check"></i> Book Now
+        </a>
+        
+        <a href="{% url 'app:restaurant_list' %}" class="btn btn-secondary btn-block">
+            <i class="fas fa-arrow-left"></i> Back to Restaurants
+        </a>
+        
+        <!-- Restaurant Tips -->
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e1e8ed;">
+            <h4 style="color: var(--primary-color); margin-bottom: 1rem;">
+                <i class="fas fa-lightbulb"></i> Booking Tips
+            </h4>
+            <ul style="list-style: none; padding: 0; color: var(--light-text);">
+                <li style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-clock" style="color: var(--secondary-color); margin-right: 0.5rem;"></i>
+                    Book at least 2 hours in advance
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-users" style="color: var(--secondary-color); margin-right: 0.5rem;"></i>
+                    Maximum 20 guests per booking
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-phone" style="color: var(--secondary-color); margin-right: 0.5rem;"></i>
+                    Call for special requests
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Restaurant Features -->
+{% if restaurant.description or restaurant.opening_hours %}
+<div class="card" style="margin-top: 2rem;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-info-circle"></i> Restaurant Information
+        </h2>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        {% if restaurant.description %}
+        <div>
+            <h4 style="color: var(--primary-color); margin-bottom: 1rem;">About Us</h4>
+            <p style="color: var(--dark-text); line-height: 1.6;">{{ restaurant.description }}</p>
+        </div>
+        {% endif %}
+        
+        {% if restaurant.opening_hours %}
+        <div>
+            <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Hours of Operation</h4>
+            <p style="color: var(--dark-text);">{{ restaurant.opening_hours }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

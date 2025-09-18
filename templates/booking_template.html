@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book a Table - TableBook{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <h1><i class="fas fa-calendar-check"></i> Book Your Perfect Table</h1>
+    <p>Reserve your spot at the finest restaurants in town</p>
+</section>
+
+<div class="row" style="display: flex; gap: 2rem; align-items: flex-start;">
+    <!-- Booking Form -->
+    <div class="col-8" style="flex: 2;">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-utensils"></i> Make a Reservation</h2>
+                <p>Fill out the form below to book your table</p>
+            </div>
+            
+            <form method="post" novalidate id="bookingForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <ul class="errorlist">
+                            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        {{ form.guest_name.label_tag }}
+                        {{ form.guest_name }}
+                        {% for error in form.guest_name.errors %}
+                            <div class="errorlist">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.guest_email.label_tag }}
+                        {{ form.guest_email }}
+                        {% for error in form.guest_email.errors %}
+                            <div class="errorlist">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.guest_phone.label_tag }}
+                    {{ form.guest_phone }}
+                    {% for error in form.guest_phone.errors %}
+                        <div class="errorlist">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        {{ form.visit_date.label_tag }}
+                        {{ form.visit_date }}
+                        {% for error in form.visit_date.errors %}
+                            <div class="errorlist">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.visit_time.label_tag }}
+                        {{ form.visit_time }}
+                        {% for error in form.visit_time.errors %}
+                            <div class="errorlist">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.number_of_guests.label_tag }}
+                        {{ form.number_of_guests }}
+                        {% for error in form.number_of_guests.errors %}
+                            <div class="errorlist">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.restaurant.label_tag }}
+                    {{ form.restaurant }}
+                    {% for error in form.restaurant.errors %}
+                        <div class="errorlist">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.special_requests.label_tag }}
+                    {{ form.special_requests }}
+                    {% for error in form.special_requests.errors %}
+                        <div class="errorlist">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-check"></i> Book Table
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Featured Restaurants -->
+    <div class="col-4" style="flex: 1;">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-star"></i> Featured Restaurants</h3>
+            </div>
+            
+            {% if featured_restaurants %}
+                {% for restaurant in featured_restaurants %}
+                    <div class="restaurant-card" style="margin-bottom: 1rem; padding: 1rem; border: 1px solid #e1e8ed; border-radius: 8px;">
+                        <div class="restaurant-name">{{ restaurant.name }}</div>
+                        <div class="restaurant-location">
+                            <i class="fas fa-map-marker-alt"></i> {{ restaurant.location }}
+                        </div>
+                        {% if restaurant.description %}
+                            <div class="restaurant-description">{{ restaurant.description|truncatewords:15 }}</div>
+                        {% endif %}
+                        {% if restaurant.phone %}
+                            <div style="color: var(--light-text); font-size: 0.9rem;">
+                                <i class="fas fa-phone"></i> {{ restaurant.phone }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: var(--light-text); text-align: center; padding: 2rem;">
+                    <i class="fas fa-info-circle"></i> No restaurants available at the moment.
+                </p>
+            {% endif %}
+            
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="{% url 'app:restaurant_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> View All Restaurants
+                </a>
+            </div>
+        </div>
+
+        <!-- Booking Tips -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-lightbulb"></i> Booking Tips</h3>
+            </div>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-clock" style="color: var(--secondary-color); margin-right: 0.5rem;"></i>
+                    Book at least 2 hours in advance
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-users" style="color: var(--secondary-color); margin-right: 0.5rem;"></i>
+                    Maximum 20 guests per booking
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-calendar" style="color: var(--secondary-color); margin-right: 0.5rem;"></i>
+                    Reservations valid for 30 days
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <i class="fas fa-phone" style="color: var(--secondary-color); margin-right: 0.5rem;"></i>
+                    Contact restaurant for special requests
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Real-time availability checking
+    $('#id_restaurant, #id_visit_date, #id_visit_time, #id_number_of_guests').on('change', function() {
+        checkAvailability();
+    });
+    
+    function checkAvailability() {
+        var restaurant = $('#id_restaurant').val();
+        var date = $('#id_visit_date').val();
+        var time = $('#id_visit_time').val();
+        var guests = $('#id_number_of_guests').val();
+        
+        if (restaurant && date && time && guests) {
+            $.get('{% url "app:check_availability" %}', {
+                'restaurant_id': restaurant,
+                'date': date,
+                'time': time,
+                'guests': guests
+            }, function(data) {
+                if (data.available) {
+                    $('.availability-status').remove();
+                    $('<div class="alert alert-success availability-status"><i class="fas fa-check-circle"></i> Tables available for your selected time!</div>')
+                        .insertAfter('#bookingForm');
+                } else {
+                    $('.availability-status').remove();
+                    $('<div class="alert alert-error availability-status"><i class="fas fa-exclamation-triangle"></i> No tables available for your selected time. Please try a different time.</div>')
+                        .insertAfter('#bookingForm');
+                }
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
