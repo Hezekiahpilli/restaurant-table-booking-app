@@ -6,7 +6,7 @@ from django.core.management import call_command
 from io import StringIO
 import os
 
-class RestaurantTableBookingTestCase(TestCase):
+class TestRestaurantTableBooking(TestCase):
     def setUp(self):
         try:
             self.booking_url = reverse('booking')
