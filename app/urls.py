@@ -8,6 +8,7 @@ app_name = 'app'
 
 urlpatterns = [
     path('', index, name='index'),
+    path('booking/', index, name='booking'),
     path('booking/<uuid:booking_id>/', booking_detail, name='booking_detail'),
     path('booking/<uuid:booking_id>/cancel/', cancel_booking, name='cancel_booking'),
     path('restaurants/', restaurant_list, name='restaurant_list'),
